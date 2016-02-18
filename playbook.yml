@@ -27,7 +27,10 @@
       - restart apache
 
    - name: add script for installing current owncloud
-     copy: src=instalarVersionActual.sh dest=/home/vagrant/instalarVersionActual.sh owner=vagrant group=vagrant mode=0775
+     copy: src=install_master_owncloud.sh dest=/home/vagrant/install_master_owncloud.sh owner=vagrant group=vagrant mode=0775
+
+   - name: add script for removing default owncloud database
+     copy: src=clean_database.py dest=/home/vagrant/clean_database.py owner=vagrant group=vagrant mode=0775
 
    - name: download composer
      command: sh -c "curl -sS https://getcomposer.org/installer | php"
