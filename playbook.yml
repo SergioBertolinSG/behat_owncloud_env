@@ -63,6 +63,12 @@
 
    - name: download composer
      command: sh -c "curl -sS https://getcomposer.org/installer | php"
+
+   - name: disable php5
+     command: sh -c "a2dismod php5"
+
+   - name: disable php7
+     command: sh -c "a2enmod php7.0"
    
    - name: install it
      command: sh -c "mv /home/vagrant/composer.phar /usr/local/bin/composer"
