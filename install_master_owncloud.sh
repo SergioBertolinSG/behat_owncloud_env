@@ -1,10 +1,11 @@
 sudo rm -rf core
-git clone --depth 1 https://github.com/owncloud/core.git
+#git clone --depth 1 https://github.com/owncloud/core.git
+git clone https://github.com/owncloud/core.git
 cd core
-git fetch --unshallow
-git pull --all
-git remote set-branches origin '*'
-git fetch -vvv
+#git fetch --unshallow
+#git pull --all
+#git remote set-branches origin '*'
+#git fetch -vvv
 make
 cd ..
 fecha=`date +%d-%m-%y`
