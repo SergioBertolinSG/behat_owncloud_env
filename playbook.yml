@@ -62,6 +62,8 @@
    - name: add script for removing default owncloud database
      copy: src=clean_database.py dest=/home/vagrant/clean_database.py owner=vagrant group=vagrant mode=0775
 
+   - user: name=vagrant group=www-data
+
    - name: download composer
      command: sh -c "curl -sS https://getcomposer.org/installer | php"
 
@@ -91,6 +93,12 @@
 
    - name: Set zsh as default shell
      user: name=vagrant shell=/bin/zsh
+
+   - name: Give www-data control of vagrant home 1/2
+     command: sh -c "chgrp www-data /home/vagrant"
+
+   - name: Give www-data control of vagrant home 2/2
+     command: sh -c "chmod g+s /home/vagrant"
  
    - name: create swap file composer
      command: sh -c "/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024"
