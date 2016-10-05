@@ -10,6 +10,8 @@
    - name: Add apt key
      apt_key: validate_certs=False url=https://download.owncloud.org/download/repositories/stable/Ubuntu_14.04/Release.key state=present
 
+   - name: Add ondrej repository (php7)
+     apt_repository: repo='ppa:ondrej/php'
 
    - name: update packages cache
      apt: update_cache=yes cache_valid_time=3600
@@ -23,6 +25,33 @@
        - { name: 'apache2' }
        - { name: 'mysql-server' }
        - { name: 'owncloud' }
+       - { name: 'npm' }
+       - { name: 'nodejs-legacy' }
+       - { name: 'php7.0' }
+       - { name: 'php7.0-zip' }
+       - { name: 'php7.0-mbstring' }
+       - { name: 'php7.0-mysql' }
+       - { name: 'php7.0-common' }
+       - { name: 'php7.0-gd' }
+       - { name: 'php7.0-intl' }
+       - { name: 'php7.0-mcrypt' }
+       - { name: 'php7.0-xml' }
+       - { name: 'php7.0-curl' }
+       - { name: 'php7.0-json' }
+       - { name: 'php7.0-ldap' }
+       - { name: 'php7.0-soap' }
+       - { name: 'wget' }
+       - { name: 'rsync' }
+       - { name: 'unzip' }
+       - { name: 'php7.0-xdebug' }
+       - { name: 'netcat' }
+       - { name: 'php7.0-dev' }
+       - { name: 'php7.0-igbinary' }
+       - { name: 'phpunit' }
+       - { name: 'php-xml-parser' }
+
+    #redis-server php7.0-redis smbclient
+
      notify:
       - restart apache
 
@@ -34,6 +63,12 @@
 
    - name: download composer
      command: sh -c "curl -sS https://getcomposer.org/installer | php"
+
+   - name: disable php5
+     command: sh -c "a2dismod php5"
+
+   - name: disable php7
+     command: sh -c "a2enmod php7.0"
    
    - name: install it
      command: sh -c "mv /home/vagrant/composer.phar /usr/local/bin/composer"
