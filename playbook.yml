@@ -59,6 +59,9 @@
    - name: add script for installing current owncloud
      copy: src=install_master_owncloud.sh dest=/home/vagrant/install_master_owncloud.sh owner=vagrant group=vagrant mode=0775
 
+   - name: add script for rebooting the install of owncloud
+     copy: src=reboot_owncloud_installation.sh dest=/home/vagrant/reboot_owncloud_installation.sh owner=vagrant group=www-data mode=0775
+
    - name: add script for removing default owncloud database
      copy: src=clean_database.py dest=/home/vagrant/clean_database.py owner=vagrant group=vagrant mode=0775
 
