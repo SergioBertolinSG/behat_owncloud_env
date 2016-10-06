@@ -49,6 +49,7 @@
        - { name: 'php7.0-igbinary' }
        - { name: 'phpunit' }
        - { name: 'php-xml-parser' }
+       - { name: 'zsh' }
 
     #redis-server php7.0-redis smbclient
 
@@ -58,8 +59,13 @@
    - name: add script for installing current owncloud
      copy: src=install_master_owncloud.sh dest=/home/vagrant/install_master_owncloud.sh owner=vagrant group=vagrant mode=0775
 
+   - name: add script for rebooting the install of owncloud
+     copy: src=reboot_owncloud_installation.sh dest=/home/vagrant/reboot_owncloud_installation.sh owner=vagrant group=www-data mode=0775
+
    - name: add script for removing default owncloud database
      copy: src=clean_database.py dest=/home/vagrant/clean_database.py owner=vagrant group=vagrant mode=0775
+
+   - user: name=vagrant group=www-data
 
    - name: download composer
      command: sh -c "curl -sS https://getcomposer.org/installer | php"
@@ -72,6 +78,30 @@
    
    - name: install it
      command: sh -c "mv /home/vagrant/composer.phar /usr/local/bin/composer"
+
+   - name: Clone oh-my-zsh repo
+     git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=/home/vagrant/.oh-my-zsh
+
+   - name: Create conf folder in home directory
+     file: path=/home/vagrant/conf/ state=directory owner=vagrant
+
+   - name: deploy .zshrc
+     template: src=files/zshrc.in dest=/home/vagrant/conf/zshrc owner=vagrant
+
+   - name: remove standard zshrc
+     file: path=/home/vagrant/.zshrc state=absent
+
+   - name: symlink zshrc
+     file: path=/home/vagrant/.zshrc src=/home/vagrant/conf/zshrc state=link owner=vagrant
+
+   - name: Set zsh as default shell
+     user: name=vagrant shell=/bin/zsh
+
+   - name: Give www-data control of vagrant home 1/2
+     command: sh -c "chgrp www-data /home/vagrant"
+
+   - name: Give www-data control of vagrant home 2/2
+     command: sh -c "chmod g+s /home/vagrant"
  
    - name: create swap file composer
      command: sh -c "/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024"
