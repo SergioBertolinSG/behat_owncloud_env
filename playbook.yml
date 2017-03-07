@@ -1,17 +1,20 @@
 ---
 - hosts: all
-  user: vagrant
-  sudo: yes
-  
+  user: ubuntu
+  #sudo: yes
+
+  gather_facts: false
+  become: true
   tasks:
+
+   - name: install python 2
+     raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
    - name: Add owncloud repository
-     command: sh -c "echo 'deb http://download.owncloud.org/download/repositories/stable/Ubuntu_14.04/ /' >> /etc/apt/sources.list.d/owncloud.list"
+     command: sh -c "echo 'deb http://download.owncloud.org/download/repositories/stable/Ubuntu_16.04/ /' >> /etc/apt/sources.list.d/owncloud.list"
 
    - name: Add apt key
-     apt_key: validate_certs=False url=https://download.owncloud.org/download/repositories/stable/Ubuntu_14.04/Release.key state=present
-
-   - name: Add ondrej repository (php7)
-     apt_repository: repo='ppa:ondrej/php'
+     apt_key: validate_certs=False url=https://download.owncloud.org/download/repositories/stable/Ubuntu_16.04/Release.key state=present
 
    - name: update packages cache
      apt: update_cache=yes cache_valid_time=3600
@@ -23,44 +26,43 @@
        - { name: 'python' }
        - { name: 'sudo' }
        - { name: 'apache2' }
-       - { name: 'mysql-server' }
+       - { name: 'mariadb-server' }
        - { name: 'owncloud' }
        - { name: 'npm' }
        - { name: 'nodejs-legacy' }
-       - { name: 'php7.0' }
-       - { name: 'php7.0-zip' }
-       - { name: 'php7.0-mbstring' }
-       - { name: 'php7.0-mysql' }
-       - { name: 'php7.0-common' }
-       - { name: 'php7.0-gd' }
-       - { name: 'php7.0-intl' }
-       - { name: 'php7.0-mcrypt' }
-       - { name: 'php7.0-xml' }
-       - { name: 'php7.0-curl' }
-       - { name: 'php7.0-json' }
-       - { name: 'php7.0-ldap' }
-       - { name: 'php7.0-soap' }
+       - { name: 'php-zip' }
+       - { name: 'php-mbstring' }
+       - { name: 'php-mysql' }
+       - { name: 'php-common' }
+       - { name: 'php-gd' }
+       - { name: 'php-intl' }
+       - { name: 'php-mcrypt' }
+       - { name: 'php-xml' }
+       - { name: 'php-curl' }
+       - { name: 'php-json' }
+       - { name: 'php-ldap' }
+       - { name: 'php-soap' }
        - { name: 'wget' }
        - { name: 'rsync' }
        - { name: 'unzip' }
-       - { name: 'php7.0-xdebug' }
+       - { name: 'php-xdebug' }
        - { name: 'netcat' }
-       - { name: 'php7.0-dev' }
-       - { name: 'php7.0-igbinary' }
+       - { name: 'php-dev' }
+       - { name: 'php-igbinary' }
        - { name: 'phpunit' }
        - { name: 'php-xml-parser' }
        - { name: 'zsh' }
 
-    #redis-server php7.0-redis smbclient
+    #redis-server php-redis smbclient
 
      notify:
       - restart apache
 
    - name: add script for installing current owncloud
-     copy: src=install_master_owncloud.sh dest=/home/vagrant/install_master_owncloud.sh owner=vagrant group=vagrant mode=0775
+     copy: src=install_master_owncloud.sh dest=/home/ubuntu/install_master_owncloud.sh owner=ubuntu group=ubuntu mode=0775
 
    - name: add script for rebooting the install of owncloud
-     copy: src=reboot_owncloud_installation.sh dest=/home/vagrant/reboot_owncloud_installation.sh owner=vagrant group=www-data mode=0775
+     copy: src=reboot_owncloud_installation.sh dest=/home/ubuntu/reboot_owncloud_installation.sh owner=ubuntu group=www-data mode=0775
 
    - name: add script for removing default owncloud database
      copy: src=clean_database.py dest=/home/vagrant/clean_database.py owner=vagrant group=vagrant mode=0775
@@ -68,43 +70,37 @@
    - name: add script for creating swap space
      copy: src=create_swap.sh dest=/home/vagrant/create_swap.sh owner=vagrant group=vagrant mode=0775
 
-   - user: name=vagrant group=www-data
+   - user: name=ubuntu group=www-data
 
    - name: download composer
      command: sh -c "curl -sS https://getcomposer.org/installer | php"
 
-   - name: disable php5
-     command: sh -c "a2dismod php5"
-
-   - name: disable php7
-     command: sh -c "a2enmod php7.0"
-   
    - name: install it
-     command: sh -c "mv /home/vagrant/composer.phar /usr/local/bin/composer"
+     command: sh -c "mv /home/ubuntu/composer.phar /usr/local/bin/composer"
 
    - name: Clone oh-my-zsh repo
-     git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=/home/vagrant/.oh-my-zsh
+     git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=/home/ubuntu/.oh-my-zsh
 
    - name: Create conf folder in home directory
-     file: path=/home/vagrant/conf/ state=directory owner=vagrant
+     file: path=/home/ubuntu/conf/ state=directory owner=ubuntu
 
    - name: deploy .zshrc
-     template: src=files/zshrc.in dest=/home/vagrant/conf/zshrc owner=vagrant
+     template: src=files/zshrc.in dest=/home/ubuntu/conf/zshrc owner=ubuntu
 
    - name: remove standard zshrc
-     file: path=/home/vagrant/.zshrc state=absent
+     file: path=/home/ubuntu/.zshrc state=absent
 
    - name: symlink zshrc
-     file: path=/home/vagrant/.zshrc src=/home/vagrant/conf/zshrc state=link owner=vagrant
+     file: path=/home/ubuntu/.zshrc src=/home/ubuntu/conf/zshrc state=link owner=ubuntu
 
    - name: Set zsh as default shell
-     user: name=vagrant shell=/bin/zsh
+     user: name=ubuntu shell=/bin/zsh
 
-   - name: Give www-data control of vagrant home 1/2
-     command: sh -c "chgrp www-data /home/vagrant"
+   - name: Give www-data control of ubuntu home 1/2
+     command: sh -c "chgrp www-data /home/ubuntu"
 
-   - name: Give www-data control of vagrant home 2/2
-     command: sh -c "chmod g+s /home/vagrant"
+   - name: Give www-data control of ubuntu home 2/2
+     command: sh -c "chmod g+s /home/ubuntu"
  
    - name: create swap file composer
      command: sh -c "/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024"
