@@ -65,10 +65,10 @@
      copy: src=reboot_owncloud_installation.sh dest=/home/ubuntu/reboot_owncloud_installation.sh owner=ubuntu group=www-data mode=0775
 
    - name: add script for removing default owncloud database
-     copy: src=clean_database.py dest=/home/vagrant/clean_database.py owner=vagrant group=vagrant mode=0775
+     copy: src=clean_database.py dest=/home/ubuntu/clean_database.py owner=ubuntu group=ubuntu mode=0775
      
    - name: add script for creating swap space
-     copy: src=create_swap.sh dest=/home/vagrant/create_swap.sh owner=vagrant group=vagrant mode=0775
+     copy: src=create_swap.sh dest=/home/ubuntu/create_swap.sh owner=ubuntu group=ubuntu mode=0775
 
    - user: name=ubuntu group=www-data
 
