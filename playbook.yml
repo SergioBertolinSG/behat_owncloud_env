@@ -113,9 +113,10 @@
      command: sh -c "/sbin/swapon /var/swap.1"
 
    - name: fix mariadb
-     command: sh -c "./home/ubuntu/prepare_root_user_mariadb.sh"
-
+     command: sh -c "mysql -u root -e \"update mysql.user set plugin='' where user='root';\""
 
   handlers:
     - name: restart apache
       service: name=apache2 state=restarted
+    - name: restart mysql
+      service: name=mysql state=restarted
