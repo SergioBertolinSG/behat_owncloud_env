@@ -70,6 +70,9 @@
    - name: add script for creating swap space
      copy: src=create_swap.sh dest=/home/ubuntu/create_swap.sh owner=ubuntu group=ubuntu mode=0775
 
+   - name: add script for fixing problem with mariadb root user
+     copy: src=prepare_root_user_mariadb.sh dest=/home/ubuntu/prepare_root_user_mariadb.sh owner=ubuntu group=ubuntu mode=0775
+
    - user: name=ubuntu group=www-data
 
    - name: download composer
@@ -108,6 +111,10 @@
      command: sh -c "/sbin/mkswap /var/swap.1"
    - name: activate swap
      command: sh -c "/sbin/swapon /var/swap.1"
+
+   - name: fix mariadb
+     command: sh -c "./home/ubuntu/prepare_root_user_mariadb.sh"
+
 
   handlers:
     - name: restart apache

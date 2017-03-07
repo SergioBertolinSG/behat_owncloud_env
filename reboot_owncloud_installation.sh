@@ -17,5 +17,5 @@ mysql -u root -h localhost -e "drop user oc_admin@localhost"
 
 $installation_path/occ maintenance:install --database='mysql' --database-name='owncloud' --database-user='root' --database-pass='' --admin-user='admin' --admin-pass='admin'
 
-IP_ADDRESS=$(ifconfig eth1 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://')
+IP_ADDRESS=$(ifconfig enp0s8 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://')
 $installation_path/occ config:system:set trusted_domains 2 --value=$IP_ADDRESS
