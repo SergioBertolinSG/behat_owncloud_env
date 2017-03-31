@@ -24,7 +24,7 @@
        - { name: 'sudo' }
        - { name: 'apache2' }
        - { name: 'mysql-server' }
-       - { name: 'owncloud' }
+       - { name: 'owncloud-files' }
        - { name: 'npm' }
        - { name: 'nodejs-legacy' }
        - { name: 'php7.0' }
