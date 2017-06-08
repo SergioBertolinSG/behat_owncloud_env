@@ -24,7 +24,7 @@ Install ansible http://docs.ansible.com/ansible/intro_installation.html
 5. Install ownCloud using install_master_owncloud.sh.
 
 6. Run integration tests:
-   - go to /var/www/html/master_(TODAYDATE)/build/integration
+   - go to /var/www/html/master_(TODAYDATE)/tests/integration
    - do sudo -u www-data ./run.sh
 
 
